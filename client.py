@@ -124,6 +124,8 @@ class Client:
             p1.toDB(self.db, p, pg, m)
         except IndexError:
             print(player, ' has their profile hidden')
+        except sqlite.IntegrityError:
+            print(player, ' has their profile hidden')
 
     def itemDB(self):
         items = self.getItems()
