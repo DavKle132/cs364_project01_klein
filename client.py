@@ -107,7 +107,7 @@ class Client:
         p1.toDB(self.db, p, pg, m)
         friends = self.getFriends(player)
         for f in friends:
-           # print(f['name'])
+            # print(f['name'])
             if f['name'] != '':
                 pJson = self.getPlayer(f['name'])
                 jsonPG = self.getGodRanks(f['name'])
@@ -124,7 +124,7 @@ class Client:
             p1.toDB(self.db, p, pg, m)
         except IndexError:
             print(player, ' has their profile hidden')
-        except sqlite.IntegrityError:
+        except sqlite3.IntegrityError:
             print(player, ' has their profile hidden')
 
     def itemDB(self):

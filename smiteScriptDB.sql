@@ -70,7 +70,7 @@ CREATE TABLE [Player]
 (
     [PlayerID] INTEGER PRIMARY KEY NOT NULL,
     [Name] NVARCHAR(25),
-    [Avatar_URL] TEXT NOT NULL,
+    [Avatar_URL] TEXT,
     [Created_Datetime] NVARCHAR(30),
     [Leaves] INTEGER,
     [Level] INTEGER NOT NULL,
