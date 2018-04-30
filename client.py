@@ -114,6 +114,16 @@ class Client:
                 jsonM = self.getMatchHistory(f['name'])
                 player = Player(pJson, jsonPG, jsonM)
                 player.toDB(self.db, pJson, jsonPG, jsonM)
+    
+    def singlePlayer(self, player):
+        p = self.getPlayer(player)
+        pg = self.getGodRanks(player)
+        m = self.getMatchHistory(player)
+        try:
+            p1 = Player(p, pg, m)
+            p1.toDB(self.db, p, pg, m)
+        except IndexError:
+            print(player, ' has their profile hidden')
 
     def itemDB(self):
         items = self.getItems()

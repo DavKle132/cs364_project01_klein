@@ -25,6 +25,17 @@ class Db:
         self.c.godAbilityDB()
         print('Complete')
 
+    def newSinglePlayer(self, pName):
+        conn = sqlite3.connect(self.dbAddr)
+        c = conn.cursor()
+        c.execute("SELECT * FROM Player WHERE Player.Name LIKE '%' || ?", (pName,))
+        rows = c.fetchall()
+        if(len(rows) == 0):
+            self.c.singlePlayer(pName)
+        else:
+            print('Player already in database')
+
+
 
     def getFriends(self):
         conn = sqlite3.connect(self.dbAddr)
@@ -43,6 +54,19 @@ class Db:
         names = [description[0] for description in c.description]
         conn.close()
         return {'rows':rows, 'names':names}
+    
+    def averageDamage(self):
+        conn = sqlite3.connect(self.dbAddr)
+        c = conn.cursor()
+        c.execute('SELECT God, AVG(Damage) AS Damage    \
+                    FROM PlayerMatch                    \
+                    WHERE God NOT NULL                  \
+                    GROUP BY God                        \
+                    ORDER BY AVG(Damage) DESC')
+        rows = c.fetchall()
+        names = [description[0] for description in c.description]
+        conn.close()
+        return {'rows':rows, 'names':names}
 
     def getBestRole(self, pName):
         conn = sqlite3.connect(self.dbAddr)
@@ -53,6 +77,17 @@ class Db:
                     WHERE Player.Name LIKE '%' || ? \
                     GROUP BY God.Roles \
                     ORDER BY sum(PlayerGod.Worshippers) DESC", (pName,))
+        rows = c.fetchall()
+        names = [description[0] for description in c.description]
+        conn.close()
+        return {'rows':rows, 'names':names}
+
+    def getMatches(self, pName):
+        conn = sqlite3.connect(self.dbAddr)
+        c = conn.cursor()
+        c.execute("SELECT God, Kills, Deaths, Assists, Damage, Damage_Mitigated, Gold, Win_Status \
+                    FROM PlayerMatch \
+                    WHERE playerName LIKE '%' || ?", (pName,))
         rows = c.fetchall()
         names = [description[0] for description in c.description]
         conn.close()
