@@ -3,6 +3,7 @@ db = Db('db.sqlite3')
 
 def main():
     input_var = 'temp'
+    welcome()
     while(input_var != 'exit'):
         input_var = input("smite_friends> ")
         inList = input_var.split(' -')
@@ -135,6 +136,13 @@ def pprintResponse(response):
             print('{var:{offset}}'.format(var = str(elem), offset = offset), end='', flush=True)
             i+=1
         print()
+
+def welcome():
+    print('----------------------------------------------------')
+    print('Welcome to SMITE_friends, the program that helps you')
+    print('compare statistics against your friends!')
+    print('Use the "help" command to get started!')
+    print('----------------------------------------------------')
 
 
 
