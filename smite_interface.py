@@ -8,7 +8,7 @@ db = Db('db.sqlite3')
 
 def main():
     input_var = 'temp'
-    welcome()
+    clear()
     while(input_var != 'exit'):
         input_var = input("smite_friends> ")
         inList = input_var.split(' -')
@@ -20,6 +20,7 @@ def main():
             print('Invalid command.\nDo "help" for more information')
         if(input_var != 'exit'):
             print()
+    clear(False)
 
 def parseList(inList):
     if(len(inList) == 0):
@@ -177,10 +178,11 @@ def welcome():
     print('Use the "help" command to get started!')
     print('----------------------------------------------------')
 
-def clear():
+def clear(flag = True):
     clear = lambda: os.system('cls')
     clear()
-    welcome()
+    if(flag):
+        welcome()
 
 
 

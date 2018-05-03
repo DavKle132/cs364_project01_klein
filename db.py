@@ -84,8 +84,9 @@ class Db:
         conn = sqlite3.connect(self.dbAddr)
         c = conn.cursor()
         c.execute('SELECT God, AVG(Damage) AS Damage    \
-                    FROM PlayerMatch                    \
-                    WHERE God NOT NULL AND God = ?      \
+                    FROM PlayerMatch JOIN God           \
+                    ON PlayerMatch.GodId = God.GodID    \
+                    WHERE God NOT NULL AND God.Name = ? \
                     GROUP BY God                        \
                     ORDER BY AVG(Damage) DESC', (god,))
         rows = c.fetchall()
