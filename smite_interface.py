@@ -1,5 +1,10 @@
 from db import Db
+import os
 db = Db('db.sqlite3')
+
+# This class recieves input from the user to display statistics stored in the database
+# @author = David Klein
+# @date   = 5/3/2018
 
 def main():
     input_var = 'temp'
@@ -27,12 +32,21 @@ def parseList(inList):
         printHelp()
         return 0
 
-    if(inList[0].lower() == 'getgods'):
-        if(len(inList) != 1):
-            return 1
-        response = db.getGods()
-        pprintResponse(response)
+    if(inList[0] == 'clear'):
+        clear()
         return 0
+
+    if(inList[0].lower() == 'getgods'):
+        if(len(inList) == 1):
+            response = db.getGods()
+            pprintResponse(response)
+            return 0
+        elif(len(inList) == 2):
+            response = db.getGodsOne(inList[1])
+            pprintResponse(response)
+            return 0
+        
+        return 1
 
     if(inList[0].lower() == 'getfriends'):
         if(len(inList) != 1):
@@ -42,11 +56,15 @@ def parseList(inList):
         return 0
 
     if(inList[0].lower() == 'averagedamage'):
-        if(len(inList) != 1):
-            return 1
-        response = db.averageDamage()
-        pprintResponse(response)
-        return 0
+        if(len(inList) == 1):
+            response = db.averageDamage()
+            pprintResponse(response)
+            return 0
+        elif(len(inList) == 2):
+            response = db.averageDamageOne(inList[1])
+            pprintResponse(response)
+            return 0
+        return 1
 
     if(inList[0].lower() == 'getmatches'):
         if(len(inList) != 2):
@@ -79,19 +97,34 @@ def parseList(inList):
         pprintResponse(response)
         return 0
 
+    if(inList[0].lower() == 'playergod'):
+        if(len(inList) == 2):
+            response = db.playergodstats(inList[1])
+            pprintResponse(response)
+            return 0
+        elif(len(inList) == 3):
+            response = db.playergodstatsone(inList[1], inList[2])
+            pprintResponse(response)
+            return 0
+        return 1
+
+    
+
     return 2
 
 def printHelp():
-    print('exit                                  : Terminates execution of smite_friends')
-    print('help                                  : Prints to console how to utilize commands')
-    print('getfriends                            : Shows all players currently in database')
-    print('getgods                               : Shows all gods currenlty playable in SMITE')
-    print('averagedamage                         : Shows the average damage for all gods who have been played')
-    print('newplayer  -<Player_Name>             : Adds a single player into the database')
-    print('newplayer  -<Player_Name> -b          : Resets database and pulls down for all data for Player_Name and all friends')
-    print('getmatches -<Player_Name>             : Shows all recent matches for a specific player (Includes AI matches)')
-    print('rolestats  -<Player_Name>             : Shows all classes and associated worshipper totals')
-    print('betterwith -<Player_Name> -<God_Name> : Shows all friends who have more worshippers with the designated god')
+    print('() optional parameter and <> mandatory parameter')
+    print('exit                                     : Terminates execution of smite_friends')
+    print('clear                                    : Resets the program')
+    print('help                                     : Prints to console how to utilize commands')
+    print('getfriends                               : Shows all players currently in database')
+    print('averagedamage -(God_Name)                : Shows the average damage for all gods who have been played')
+    print('getgods       -(God_Name)                : Shows all gods currenlty playable in SMITE or a specific god')
+    print('newplayer     -<Player_Name> (-b)        : Adds a single player into the database or a bulk entry of all the players friends')
+    print('getmatches    -<Player_Name>             : Shows all recent matches for a specific player (Includes AI matches)')
+    print('rolestats     -<Player_Name>             : Shows all classes and associated worshipper totals')
+    print('betterwith    -<Player_Name> -<God_Name> : Shows all friends who have more worshippers with the designated god')
+    print('playergod     -<Player_Name> -(God_Name) : Shows stats for every god or just a single god')
     print('\nNote that all commands are case-insensitive, but all tags are case-sensitive.')
 
 def pprintResponse(response):
@@ -143,6 +176,12 @@ def welcome():
     print('compare statistics against your friends!')
     print('Use the "help" command to get started!')
     print('----------------------------------------------------')
+
+def clear():
+    clear = lambda: os.system('cls')
+    clear()
+    welcome()
+
 
 
 

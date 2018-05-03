@@ -4,6 +4,9 @@ devId = '2378'
 autKey = '16884716A7714D918BF411C9822E9989'
 baseUrl = 'http://api.smitegame.com/smiteapi.svc/'
 
+# This class is used to perform queries on the specified database
+# @author = DavidKlein
+# @date   = 5/3/2018
 class Db:
     def __init__(self, dbAddr):
         self.dbAddr = dbAddr
@@ -35,8 +38,6 @@ class Db:
         else:
             print('Player already in database')
 
-
-
     def getFriends(self):
         conn = sqlite3.connect(self.dbAddr)
         c = conn.cursor()
@@ -54,6 +55,17 @@ class Db:
         names = [description[0] for description in c.description]
         conn.close()
         return {'rows':rows, 'names':names}
+
+    def getGodsOne(self, god):
+        conn = sqlite3.connect(self.dbAddr)
+        c = conn.cursor()
+        c.execute("SELECT Name, Roles AS Role, Pantheon, Type, Title \
+                    FROM God \
+                    WHERE God.Name = ?", (god,))
+        rows = c.fetchall()
+        names = [description[0] for description in c.description]
+        conn.close()
+        return {'rows':rows, 'names':names}
     
     def averageDamage(self):
         conn = sqlite3.connect(self.dbAddr)
@@ -63,6 +75,19 @@ class Db:
                     WHERE God NOT NULL                  \
                     GROUP BY God                        \
                     ORDER BY AVG(Damage) DESC')
+        rows = c.fetchall()
+        names = [description[0] for description in c.description]
+        conn.close()
+        return {'rows':rows, 'names':names}
+
+    def averageDamageOne(self, god):
+        conn = sqlite3.connect(self.dbAddr)
+        c = conn.cursor()
+        c.execute('SELECT God, AVG(Damage) AS Damage    \
+                    FROM PlayerMatch                    \
+                    WHERE God NOT NULL AND God = ?      \
+                    GROUP BY God                        \
+                    ORDER BY AVG(Damage) DESC', (god,))
         rows = c.fetchall()
         names = [description[0] for description in c.description]
         conn.close()
@@ -104,6 +129,30 @@ class Db:
                                                                     ON Player.PlayerID = PlayerGod.PlayerID AND PlayerGod.GodID = God.GodID \
                                                                     WHERE Player.Name LIKE '%' || ? AND God.Name = ?)\
                     ORDER BY PlayerGod.Worshippers DESC", (god, player, god,))
+        rows = c.fetchall()
+        names = [description[0] for description in c.description]
+        conn.close()
+        return {'rows':rows, 'names':names}
+
+    def playergodstats(self, pName):
+        conn = sqlite3.connect(self.dbAddr)
+        c = conn.cursor()
+        c.execute("SELECT God.Name AS God, Kills, Deaths, Assists, PlayerGod.Wins AS Wins, PlayerGod.Losses AS Wins, Worshippers, Rank\
+                    FROM Player JOIN PlayerGod JOIN God \
+                    ON Player.PlayerId = PlayerGod.PlayerId AND PlayerGod.GodID = God.GodID \
+                    WHERE Player.Name LIKE '%' || ?", (pName,))
+        rows = c.fetchall()
+        names = [description[0] for description in c.description]
+        conn.close()
+        return {'rows':rows, 'names':names}
+
+    def playergodstatsone(self, pName, god):
+        conn = sqlite3.connect(self.dbAddr)
+        c = conn.cursor()
+        c.execute("SELECT God.Name AS God, Kills, Deaths, Assists, PlayerGod.Wins AS Wins, PlayerGod.Losses AS Wins, Worshippers, Rank\
+                    FROM Player JOIN PlayerGod JOIN God \
+                    ON Player.PlayerId = PlayerGod.PlayerId AND PlayerGod.GodID = God.GodID \
+                    WHERE Player.Name LIKE '%' || ? AND God.Name = ?", (pName, god,))
         rows = c.fetchall()
         names = [description[0] for description in c.description]
         conn.close()

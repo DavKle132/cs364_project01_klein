@@ -9,7 +9,9 @@ from item import Item
 import sqlite3
 from sqlite3 import OperationalError
 
-
+# This class parses endpoint URLs based on devId, autKey, and Timestamp
+# @author = DavidKlein
+# @date   = 5/3/2018
 
 class Client:
     devId = None
